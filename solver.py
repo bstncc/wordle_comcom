@@ -1,6 +1,9 @@
 from playwright.sync_api import sync_playwright
 import time, random
 
+# This code is almost exactly as left during the talk.
+# I made 2 modifications, and they are marked with comments
+
 def avoid_rules(page):
     page.locator('game-help').click()
 
@@ -17,7 +20,25 @@ def get_hints(page, guess_num):
     tiles = rows[guess_num-1].query_selector_all('div.row game-tile')
     get_letter = lambda tile: tile.get_attribute('letter')
     get_evaluation = lambda tile: tile.get_attribute('evaluation')
-    return [(get_letter(tile), get_evaluation(tile)) for tile in tiles]
+
+    # the rest of this function was modified after talk
+    # black letter doesn't always mean absent
+    # if the correct word is "lists" and you guess "skill"
+    # then the first "l" in skill is marked "present", and the second is "absent"
+
+    hints = [(get_letter(tile), get_evaluation(tile)) for tile in tiles]
+
+    # when we have contradictory hints, replace absent with overused
+    # track all modifiers per letter
+    letters = {i[0]: set() for i in hints}
+    for hint in hints:
+        letters[hint[0]].add(hint[1])
+
+    should_replace_absent = lambda letter: len(letters[letter] - set(['absent'])) >= 1
+    replace_absent = lambda hint: (hint[0], 'overused') if should_replace_absent(hint[0]) and hint[1] == 'absent' else hint
+
+    modified_hints = list(map(replace_absent, hints))
+    return modified_hints
 
 def all_correct(page, hints):
     if len(hints) == 0:
@@ -25,11 +46,6 @@ def all_correct(page, hints):
     return all([i[1] == 'correct' for i in hints[-1]])
 
 def prune(words, all_hints):
-    # hints = [
-    #           [('a', 'present'), ('b', 'correct'), ...],
-    #           [...]
-    #         ]
-
     valid_words = [i for i in words]
     for guess_hints in all_hints:
         keep_correct = lambda word: all(
@@ -37,7 +53,11 @@ def prune(words, all_hints):
 
         exclude_absent = lambda word: all(i[0] not in word for i in guess_hints if i[1] == 'absent')
 
-        is_valid = lambda word: keep_correct(word) and exclude_absent(word)
+        # added this line after talk
+        move_present = lambda word: all([word[i] != guess_hints[i][0] and guess_hints[i][0] in word for i in range(len(guess_hints)) if guess_hints[i][1] == 'present'])
+
+        # added move_present after talk
+        is_valid = lambda word: keep_correct(word) and exclude_absent(word) and move_present(word)
 
         valid_words = list(filter(is_valid, valid_words))
 
