@@ -16,7 +16,7 @@ Additionally, there will be a focus on design, and structuring the program in an
 *Almost.* I have written a wordle solver before, but have not used this exact design. I will also be looking up playwright syntax in some boring but specific sections.
 
 ## Time?
-Less than 1 hour (maybe ~45 minutes?) to leave time for discussion.
+Less than 1 hour (maybe ~45 minutes?) to leave time for discussion. (Plot twist it took the full hour and we didn't quite finish)
 
 ## Video?
 This will be linked after it is uploaded
@@ -26,3 +26,14 @@ This will be linked after it is uploaded
 
 ## Execute Solver
 `python3 solve.py`
+
+## Results
+We made a fully functional scraper to be able to play the game via the command line
+We made it partway through implementing some of the rules, and Maat + I fixed a bug right after the presentation ended.
+
+## After the talk
+Modified about 10 lines of code to add rules for "present" letters.
+
+Also, handled an odd complication: if a letter is reused, it can be both marked as *present / correct* and *absent* at the same time. Really, we interpret the absent as "no more of that kind of letter, even though it is in the word", and this is quite a thorny problem. We "solved" this by marking certain absent letters as "overused" if the letter also shows up as present or correct. Further optimizations can be made (like counting number of letters required in a word), but this works.
+
+Our pruning rules do not consider the number of letters that are in a word - a good solution must do this to recognize
