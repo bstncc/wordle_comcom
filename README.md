@@ -19,7 +19,7 @@ Additionally, there will be a focus on design, and structuring the program in an
 Less than 1 hour (maybe ~45 minutes?) to leave time for discussion. (Plot twist it took the full hour and we didn't quite finish)
 
 ## Video?
-This will be linked after it is uploaded
+https://www.youtube.com/watch?v=6l1Mabr0IGQ
 
 ## Dependencies
 `python3` with the `playwright` package
@@ -29,7 +29,7 @@ This will be linked after it is uploaded
 
 ## Results
 We made a fully functional scraper to be able to play the game via the command line
-We made it partway through implementing some of the rules, and Maat + I fixed a bug right after the presentation ended.
+We made it partway through implementing some of the rules, and Matt + I fixed a bug right after the presentation ended.
 
 ## After the talk
 Modified about 10 lines of code to add rules for "present" letters.
